@@ -14,6 +14,7 @@ import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
+    var currentPlace : Place? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,15 +26,17 @@ class MainActivity : AppCompatActivity() {
     fun setupUI() {
         val factory = InjectorUtils.providePlacesViewModelFactory()
         val viewModel = ViewModelProviders.of(this, factory).get(MainActivityViewModel::class.java)
-        var placePosition = 0
 
-        viewModel.getPlaces().observe(this, Observer { places ->
-            placeNameTxt.setText(places!![placePosition]._name)
-            placeDescriptionTxt.setText(places!![placePosition]._description)
+        viewModel.getPlace().observe(this, Observer { place ->
+            placeNameTxt.text = place?._name
+            placeDescriptionTxt.text = place?._description
+            currentPlace = place
         })
 
         goBtn.setOnClickListener {
-            placePosition++
+            if(currentPlace != null) {
+                viewModel.changePlace(currentPlace!!)
+            }
 
         }
 

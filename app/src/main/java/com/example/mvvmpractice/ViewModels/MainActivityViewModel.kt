@@ -8,9 +8,21 @@ import com.example.mvvmpractice.Models.PlacesRepository
 
 class MainActivityViewModel(val placesRepository: PlacesRepository) : ViewModel() {
 
+    private val currentPlace = MutableLiveData<Place>()
 
-    fun getPlaces() : LiveData<List<Place>> {
-        return placesRepository.getPlaces()
+    fun getPlace() : LiveData<Place> {
+        val places = placesRepository.getPlaces().value
+
+        if(currentPlace.value == null) {
+            currentPlace.value = places?.get(1)
+        }
+
+        return currentPlace
+    }
+
+    fun changePlace(_currentPlace: Place) {
+        val places = placesRepository.getPlaces().value
+        currentPlace.value = places?.get(places.indexOf(_currentPlace) + 1)
     }
 
     fun addPlace(place: Place) {
